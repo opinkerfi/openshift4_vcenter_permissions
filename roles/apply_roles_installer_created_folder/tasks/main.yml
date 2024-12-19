@@ -5,7 +5,7 @@
     username: "{{ vcenter.admin_username }}"
     password: "{{ vcenter.admin_password }}"
     validate_certs: no
-    role: {{ vcenter.role_prefix }}-vcenter_level
+    role: "{{ vcenter.role_prefix }}-vcenter_level"
     principal: "{{ openshift.vcenter_svc_account }}"
     object_name: rootFolder
     object_type: Folder
@@ -18,7 +18,7 @@
     username: "{{ vcenter.admin_username }}"
     password: "{{ vcenter.admin_password }}"
     validate_certs: no
-    role: {{ vcenter.role_prefix }}-datacenter_level
+    role: "{{ vcenter.role_prefix }}-datacenter_level"
     principal: "{{ openshift.vcenter_svc_account }}"
     object_name: "{{ vcenter.datacenter }}"
     object_type: Datacenter
@@ -31,7 +31,7 @@
     username: "{{ vcenter.admin_username }}"
     password: "{{ vcenter.admin_password }}"
     validate_certs: no
-    role: {{ vcenter.role_prefix }}-cluster_level
+    role: "{{ vcenter.role_prefix }}-cluster_level"
     principal: "{{ openshift.vcenter_svc_account }}"
     object_name: "{{ vcenter.cluster }}"
     object_type: ClusterComputeResource
@@ -44,7 +44,7 @@
     username: "{{ vcenter.admin_username }}"
     password: "{{ vcenter.admin_password }}"
     validate_certs: no
-    role: {{ vcenter.role_prefix }}-datastore_level
+    role: "{{ vcenter.role_prefix }}-datastore_level"
     principal: "{{ openshift.vcenter_svc_account }}"
     object_name: "{{ vcenter.datastore }}"
     object_type: Datastore
@@ -70,7 +70,7 @@
     username: "{{ vcenter.admin_username }}"
     password: "{{ vcenter.admin_password }}"
     validate_certs: no
-    role: {{ vcenter.role_prefix }}-portgroup_level
+    role: "{{ vcenter.role_prefix }}-portgroup_level"
     principal: "{{ openshift.vcenter_svc_account }}"
     object_name: "{{ vcenter.network }}"
     object_type: Network
