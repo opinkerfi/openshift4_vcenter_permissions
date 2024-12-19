@@ -1,0 +1,18 @@
+[ocp1]
+localhost ansible_connection=local
+
+[ocp1:vars]
+vcenter_ip=192.168.88.121
+vcenter_admin_username=administrator@vsphere.local
+vcenter_admin_password=Password1!
+vcenter_datacenter=DATACENTER
+vcenter_cluster=LAB
+vcenter_datastore=DATASTORE
+vcenter_network=10.0.0.x-24
+vcenter_dswitch=DistributedSwitch
+vcenter_folder=FOLDER
+vcenter_create_folder=true
+vcenter_role_prefix=ocp1
+
+openshift_vcenter_svc_account=ocp1-service-account@vsphere.local
+openshift_installer_created_folder=false

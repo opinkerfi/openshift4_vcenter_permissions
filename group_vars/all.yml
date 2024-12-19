@@ -9,7 +9,7 @@ vcenter:
   dswitch: DistributedSwitch
   folder: openshift4
   create_folder: True
-  role_prefix: {{ prompt_role_prefix }}
+  role_prefix: openshift
 openshift:
   vcenter_svc_account: OCP4Admin@vsphere.local
   installer_created_folder: False

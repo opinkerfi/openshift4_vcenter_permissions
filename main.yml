@@ -1,32 +1,78 @@
 ---
 - name: OpenShift permission helper playbook for vCenter
-  hosts: localhost
+  hosts: ocp1
   gather_facts: False
   # If you want to supply answers in a vars file you can use the vars_files directive
-  vars_files:
-    - vars.yml  # Include the variable file
-  vars_prompt:
-    - name: "prompt_admin_username"
-      prompt: "Admin Username"
-    - name: "prompt_admin_password"
-      prompt: "Admin Password"
-      private: yes  # Masks input for sensitive data
-    - name: "prompt_vcenter_ip"
-      prompt: "vCenter IP or hostname"
-    - name: "vcenter_svc_account"
-      prompt: "vCenter Service Account used with OpenShift"
+  # vars_files:
+  #   - vars.yml  # Include the variable file
+  # vars_prompt:
+  #   - name: "prompt_vcenter_ip"
+  #     prompt: "vCenter IP or hostname"
+  #   - name: "prompt_admin_username"
+  #     prompt: "Admin Username"
+  #   - name: "prompt_admin_password"
+  #     prompt: "Admin Password"
+  #     private: yes  # Masks input for sensitive data
+  #   - name: "prompt_vcenter_svc_account"
+  #     prompt: "Name of the account used with OpenShift"
 
   tasks:
+##################################################################################
+    - name: Flatten vCenter variables from ini file
+      set_fact:
+        vcenter:
+          ip: "{{ vcenter_ip }}"
+          admin_username: "{{ vcenter_admin_username }}"
+          admin_password: "{{ vcenter_admin_password }}"
+          datacenter: "{{ vcenter_datacenter }}"
+          cluster: "{{ vcenter_cluster }}"
+          datastore: "{{ vcenter_datastore }}"
+          network: "{{ vcenter_network }}"
+          dswitch: "{{ vcenter_dswitch }}"
+          folder: "{{ vcenter_folder }}"
+          create_folder: "{{ vcenter_create_folder }}"
+          role_prefix: "{{ vcenter_role_prefix }}"
+      no_log: true
+
+    - name: Flatten OpenShift variables from ini file
+      set_fact:
+        openshift:
+          vcenter_svc_account: "{{ openshift_vcenter_svc_account }}"
+          installer_created_folder: "{{ openshift_installer_created_folder }}"
+      no_log: true
+
+    - name: Print vCenter configuration
+      debug:
+        msg:
+          - "vCenter Configuration:"
+          - "IP: {{ vcenter.ip }}"
+          - "Datacenter: {{ vcenter.datacenter }}"
+          - "Cluster: {{ vcenter.cluster }}"
+          - "Datastore: {{ vcenter.datastore }}"
+          - "Network: {{ vcenter.network }}"
+          - "DSwitch: {{ vcenter.dswitch }}"
+          - "Folder: {{ vcenter.folder }}"
+          - "Create Folder: {{ vcenter.create_folder }}"
+          - "Role Prefix: {{ vcenter.role_prefix }}"
+
+    - name: Print OpenShift configuration
+      debug:
+        msg:
+          - "OpenShift Configuration:"
+          - "vCenter Service Account: {{ openshift.vcenter_svc_account }}"
+          - "Installer Created Folder: {{ openshift.installer_created_folder }}"
+
+# ##################################################################################
     - name: Create OCP 4 vCenter Role
       import_role:
         name: create_ocp4_vcenter_roles
 
-    - name: Apply OCP 4 vCenter Role
-      import_role:
-        name: apply_roles_precreated_folder
-      when: openshift.installer_created_folder != True
+#         - name: Apply OCP 4 vCenter Role
+#           import_role:
+#             name: apply_roles_precreated_folder
+#           when: openshift.installer_created_folder != True
 
-    - name: Apply OCP 4 vCenter Role
-      import_role:
-        name: apply_roles_installer_created_folder
-      when: openshift.installer_created_folder == True
+#         - name: Apply OCP 4 vCenter Role
+#           import_role:
+#             name: apply_roles_installer_created_folder
+#           when: openshift.installer_created_folder == True
