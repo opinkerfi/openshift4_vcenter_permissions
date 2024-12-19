@@ -1,6 +1,20 @@
 ---
-- hosts: localhost
+- name: OpenShift permission helper playbook
+  hosts: localhost
   gather_facts: False
+  # If you want to supply answers in a vars file you can use the vars_files directive
+  vars_files:
+    - vars.yml  # Include the variable file
+  vars_prompt:
+    - name: "prompt_admin_username"
+      prompt: "Admin Username"
+    - name: "prompt_admin_password"
+      prompt: "Admin Password"
+      private: yes  # Masks input for sensitive data
+    - name: "prompt_vcenter_ip"
+      prompt: "vCenter IP or hostname"
+    - name: "vcenter_svc_account"
+      prompt: "vCenter Service Account used with OpenShift"
 
   tasks:
     - name: Create OCP 4 vCenter Role
