@@ -2,22 +2,16 @@
 - name: OpenShift permission helper playbook for vCenter
   hosts: ocp1
   gather_facts: False
-  # If you want to supply answers in a vars file you can use the vars_files directive
-  # vars_files:
-  #   - vars.yml  # Include the variable file
-  # vars_prompt:
-  #   - name: "prompt_vcenter_ip"
-  #     prompt: "vCenter IP or hostname"
-  #   - name: "prompt_admin_username"
-  #     prompt: "Admin Username"
-  #   - name: "prompt_admin_password"
-  #     prompt: "Admin Password"
-  #     private: yes  # Masks input for sensitive data
-  #   - name: "prompt_vcenter_svc_account"
-  #     prompt: "Name of the account used with OpenShift"
+  vars_prompt:
+    - name: "vcenter_admin_username"
+      prompt: "Admin Username"
+    - name: "vcenter_admin_password"
+      prompt: "Admin Password"
+      private: yes  # Masks input for sensitive data
 
   tasks:
-##################################################################################
+    - ansible.builtin.debug:
+        msg: 'Logging in as {{ vcenter_admin_username }}'
     - name: Flatten vCenter variables from ini file
       set_fact:
         vcenter:
@@ -62,17 +56,24 @@
           - "vCenter Service Account: {{ openshift.vcenter_svc_account }}"
           - "Installer Created Folder: {{ openshift.installer_created_folder }}"
 
-# ##################################################################################
+    - name: Provide information about vCenter folders
+      community.vmware.vmware_folder_info:
+        hostname:   '{{ vcenter.ip }}'
+        username:   '{{ vcenter.admin_username }}'
+        password:   '{{ vcenter.admin_password }}'
+        datacenter: '{{ vcenter.datacenter }}'
+        validate_certs: false
+
     - name: Create OCP 4 vCenter Role
       import_role:
         name: create_ocp4_vcenter_roles
 
-#         - name: Apply OCP 4 vCenter Role
-#           import_role:
-#             name: apply_roles_precreated_folder
-#           when: openshift.installer_created_folder != True
+    - name: Apply OCP 4 vCenter Role
+      import_role:
+        name: apply_roles_precreated_folder
+      when: openshift.installer_created_folder != True
 
-#         - name: Apply OCP 4 vCenter Role
-#           import_role:
-#             name: apply_roles_installer_created_folder
-#           when: openshift.installer_created_folder == True
+    - name: Apply OCP 4 vCenter Role
+      import_role:
+        name: apply_roles_installer_created_folder
+      when: openshift.installer_created_folder == True

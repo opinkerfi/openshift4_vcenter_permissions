@@ -2,3 +2,4 @@ vars.yaml
 ansible-env/
 bin/
 downloads/
+inventory.ini
